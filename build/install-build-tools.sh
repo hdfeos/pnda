@@ -33,20 +33,15 @@ if [[ -z $(grep `hostname` /etc/hosts) ]]; then
     exit -1
 fi
 
-# Java 1.8.0_74
 #
-echo "Dependency check: Java JDK 1.8.0_74"
+echo "Dependency check: Java JDK 1.8.0_131"
 
-if [[ $($JAVA_HOME/bin/javac -version 2>&1) != "javac 1.8.0_74" ]]; then
-    echo "WARN: Unable to find JDK 1.8.0_74, going to download it and set JAVA_HOME relative to ${PWD}"
-    if [[ -z ${JAVA_MIRROR} ]]; then
-        JAVA_URL="http://download.oracle.com/otn-pub/java/jdk/8u74-b02/jdk-8u74-linux-x64.tar.gz"
-    else
-        JAVA_URL=${JAVA_MIRROR}
-    fi
-    wget --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" ${JAVA_URL}
-    tar zxf jdk-8u74-linux-x64.tar.gz --no-same-owner
-    export JAVA_HOME=${PWD}/jdk1.8.0_74
+if [[ $($JAVA_HOME/bin/javac -version 2>&1) != "javac 1.8.0_131" ]]; then
+    echo "WARN: Unable to find JDK 1.8.0_131, going to download it and set JAVA_HOME relative to ${PWD}"
+    curl -LOJ -b oraclelicense=accept-securebackup-cookie -L http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz
+    ln -s jdk-8u131-linux-x64.tar.gz jdk-8u74-linux-x64.tar.gz
+    tar zxf jdk-8u131-linux-x64.tar.gz --no-same-owner
+    export JAVA_HOME=${PWD}/jdk1.8.0_131
     export PATH=$JAVA_HOME/bin:${PATH}
 
     echo "JAVA_HOME set to ${JAVA_HOME}"
@@ -60,7 +55,7 @@ else
     echo "Java found at ${JAVA_HOME}"
 fi
 
-[[ $($JAVA_HOME/bin/javac -version 2>&1) != "javac 1.8.0_74" ]] && exit -1
+[[ $($JAVA_HOME/bin/javac -version 2>&1) != "javac 1.8.0_131" ]] && exit -1
 
 # apt-get packages required to carry out builds and tests
 #
